@@ -126,7 +126,6 @@ while True:
            if check_win(player):
              game_over = True
            player = 2
-           print(board)
          elif player == 2:
            mark_square(clicked_row,clicked_col,2)
            if check_win(player):
