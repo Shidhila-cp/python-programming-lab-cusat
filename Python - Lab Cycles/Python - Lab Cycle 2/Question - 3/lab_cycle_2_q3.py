@@ -74,14 +74,16 @@ jsonListCopy = list()
 jsonListCopy = jsonList
 for i in jsonListCopy:
   #calculating the petal area and sepal area.
-  petalArea = round((i["petalLength"]*i["petalWidth"]),3)
-  sepalArea = round((i["sepalLength"]*i["sepalWidth"]),3)
+  petalArea = (i["petalLength"]*i["petalWidth"])
+  sepalArea = (i["sepalLength"]*i["sepalWidth"])
+  totalArea = (petalArea+sepalArea)
   #adding the key and value (sepal area and petal area ) to the copied list of dictionaries.
-  i.update({"sepalArea":sepalArea})
-  i.update({"petalArea":petalArea})
+  # i.update({"sepalArea":sepalArea})
+  # i.update({"petalArea":petalArea})
+  i.update({'totalArea':totalArea})
 
 #sorting the list according of petal area and sepal area.
-sortedList = (sorted(jsonListCopy, key = lambda i: (i['sepalArea'],i['petalArea'])))
+sortedList = (sorted(jsonListCopy, key = lambda i:i['totalArea'] ))
 #sortedList = (sorted(jsonListCopy, key = lambda i: (i['sepalArea'])))
 
 print("The Sorted List")
@@ -89,6 +91,7 @@ print("The Sorted List")
 for i in sortedList:
   # i.pop('sepalArea')
   # i.pop('petalArea')
+  # i.pop('totalArea)
   print(i)
 
 myJson.close()
