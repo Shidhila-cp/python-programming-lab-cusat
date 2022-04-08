@@ -16,7 +16,7 @@ Original file is located at
 
 import json
 
-myJson =  open('/iris.json', 'r')
+myJson =  open('iris.json', 'r')
 jsonData = myJson.read()
 jsonList = json.loads(jsonData)
 
