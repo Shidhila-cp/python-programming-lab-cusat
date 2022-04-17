@@ -4,22 +4,16 @@ from pygame.locals import *
 
 pygame.init()
 
-font = pygame.font.SysFont('Constantia', 30)
+font = pygame.font.SysFont('Constantia', 45)
 
 #define colours
-bg = (204, 102, 0)
 red = (255, 0, 0)
 black = (0, 0, 0)
 white = (255, 255, 255)
 
-#define global variable
-clicked = False
-
 class button():
 	#colours for button and text
 	button_col = (255, 0, 0)
-	hover_col = (75, 225, 255)
-	click_col = (255, 0, 0)
 	text_col = black
 	width = 180
 	height = 70
@@ -30,41 +24,17 @@ class button():
 		self.text = text
 
 	def draw_button(self):
-
-		global clicked
-		action = False
-
-		#get mouse position
-		pos = pygame.mouse.get_pos()
-
-		#create pygame Rect object for the button
 		button_rect = Rect(self.x, self.y, self.width, self.height)
-		
-		#check mouseover and clicked conditions
-		if button_rect.collidepoint(pos):
-			if pygame.mouse.get_pressed()[0] == 1:
-				clicked = True
-				pygame.draw.rect(screen, self.click_col, button_rect)
-			elif pygame.mouse.get_pressed()[0] == 0 and clicked == True:
-				clicked = False
-				action = True
-			else:
-				pygame.draw.rect(screen, self.hover_col, button_rect)
-		else:
-			pygame.draw.rect(screen, self.button_col, button_rect)
-		
+		pygame.draw.rect(screen, self.button_col, button_rect)		
 		#add shading to button
 		pygame.draw.line(screen, white, (self.x, self.y), (self.x + self.width, self.y), 2)
 		pygame.draw.line(screen, white, (self.x, self.y), (self.x, self.y + self.height), 2)
 		pygame.draw.line(screen, black, (self.x, self.y + self.height), (self.x + self.width, self.y + self.height), 2)
 		pygame.draw.line(screen, black, (self.x + self.width, self.y), (self.x + self.width, self.y + self.height), 2)
-
 		#add text to button
 		text_img = font.render(self.text, True, self.text_col)
 		text_len = text_img.get_width()
 		screen.blit(text_img, (self.x + int(self.width / 2) - int(text_len / 2), self.y + 25))
-		return action
-
 
 WIDTH = 600
 boardHeight = 600
@@ -87,7 +57,6 @@ screen.fill(BG_COLOR)
 #board
 board = np.zeros((BOARD_ROWS,BOARD_COLUMNS))
 
-#pygame.draw.line(screen,black,(20,20),(580,580),15)
 def draw_lines():
   #horizontal - lines
   pygame.draw.line(screen,BLACK,(0,200),(600,200),LINE_WIDTH)
@@ -152,13 +121,6 @@ def restart():
     for col in range(BOARD_COLUMNS):
       board[row][col]=0
 
-# mark_square(0,0,1)
-# print(board)
-# mark_square(1,1,2)
-# print(board)
-# print(available_square(0,0))
-# print(available_square(1,1))
-
 def draw_figures():
   for row in range(BOARD_ROWS):
     for col in range(BOARD_COLUMNS):
@@ -173,8 +135,16 @@ draw_lines()
 game_over = False
 player = 1
 
-resetButton = button(200,614,'Reset')
+#reset button and won display text.
+resetButton = button(100,610,'Reset')
 resetButton.draw_button()
+
+text1 = font.render('O WON', True, white,BLACK)
+text2 = font.render('X WON', True, white,BLACK)
+textRect1 = text1.get_rect()
+textRect1.center = (400,650)
+textRect2 = text2.get_rect()
+textRect2.center = (400,650)
 
 #main loop
 while True:
@@ -192,11 +162,13 @@ while True:
             mark_square(clicked_row,clicked_col,1)
             if check_win(player):
               game_over = True
+              screen.blit(text1, textRect1)
             player = 2
           elif player == 2:
             mark_square(clicked_row,clicked_col,2)
             if check_win(player):
               game_over = True
+              screen.blit(text2, textRect2)
             player = 1
           draw_figures()
        else: 
