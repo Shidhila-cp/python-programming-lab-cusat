@@ -5,11 +5,14 @@ from tkinter.ttk import Style, Treeview
 import pickle
 
 global listOfVehicles
+global sortedList
 listOfVehicles = list()
+isSorted = False
 vehicle_attributes = ["ownerName","vendor","model","type","registrationNumber","engineNumber","mileage"]
 vehicleDetails = dict.fromkeys(vehicle_attributes, None)
 
 def addList():
+    global listOfVehicles
     treeList.insert(parent='', index='end', text="", values=(owner.get(), vendor.get(),model.get(),typeClass.get(),regNumber.get(),engNumber.get(),mileage.get()))
     vehicleDetails['ownerName'] = owner.get()
     vehicleDetails['vendor'] = vendor.get()
@@ -22,7 +25,8 @@ def addList():
 
 def delete():
    # Get selected item to Delete
-   selected_item = treeList.selection()[0]
+    selection=treeList.selection()[0] 
+    treeList.delete(selection)
 
 def update():
    # Get selected item to Edit
@@ -34,6 +38,7 @@ def loadFile():
         ('Picle files', '*.pkl'),
         ('All files', '*.*')
     )
+    global listOfVehicles
     filename = askopenfilename(title="Open Pickle",initialdir='/',filetypes=filetypes)
     listOfVehicles = pickle.load(open(filename,"rb"))
     showinfo(title="Selected File",message=filename)
@@ -41,12 +46,27 @@ def loadFile():
         treeList.insert(parent='', index='end', text="", values=(i['ownerName'],i['vendor'],i['model'],i['type'],i['registrationNumber'],i['engineNumber'],i['mileage']))
 
 def sortMileage():
-    sortedList = sorted(listOfVehicles,key= lambda i:i['mileage'])
+    #Clear the treeview list items
+    for item in treeList.get_children():
+        treeList.delete(item)
+    global isSorted
+    isSorted = True
+    global listOfVehicles
+    global sortedList
+    sortedList = sorted(listOfVehicles,key= lambda i:i['mileage'])    
     for i in sortedList:
         treeList.insert(parent='', index='end', text="", values=(i['ownerName'],i['vendor'],i['model'],i['type'],i['registrationNumber'],i['engineNumber'],i['mileage']))
+    showinfo(title="Sorted",message="Sorted Successfully , Create Pickle to Generate Sorted")
+
 
 def createPickle():
-    pickle.dump(listOfVehicles,open("vehicleDetails.pkl","wb"))
+    global isSorted
+    if(isSorted):
+        pickle.dump(sortedList,open("sortedData.pkl","wb"))
+        showinfo(title="Created File",message="Sorted Pickle File is Created")
+    else:
+        pickle.dump(listOfVehicles,open("vehicleData.pkl","wb"))
+        showinfo(title="Created File",message="Vehicle Pickle File is Created")
 
 #window configuration.
 window = Tk()
@@ -134,7 +154,7 @@ button5.grid(row=1,column=5)
 button6=Button(window,width=10,text="Filter",bg='#99CCAA')
 button6.grid(row=2,column=4)
 
-button7=Button(window,width=10,text="Create Pickle",bg='#99CCAA',)
+button7=Button(window,width=10,text="Create Pickle",bg='#99CCAA',command=createPickle)
 button7.grid(row=2,column=5)
 
 
