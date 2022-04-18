@@ -22,6 +22,38 @@ def addList():
     vehicleDetails['mileage'] = float(mileage.get())
     listOfVehicles.append(vehicleDetails.copy())
 
+def filterList():
+    global listOfVehicles
+    if(owner.get()!="" or vendor.get()!="" or model.get()!="" or typeClass.get()!="" or mileage.get()!=""):
+        for item in treeList.get_children():
+            treeList.delete(item)
+    else:
+        showinfo(title="Error",message="Give a Filter Key")
+    if(owner.get()!=""):
+        filterKey = owner.get()
+        for i in listOfVehicles:
+            if i['ownerName']==filterKey:
+                treeList.insert(parent='', index='end', text="", values=(i['ownerName'],i['vendor'],i['model'],i['type'],i['registrationNumber'],i['engineNumber'],i['mileage']))
+    elif (vendor.get()!=""):
+        filterKey = vendor.get()
+        for i in listOfVehicles:
+            if i['vendor']==filterKey:
+                treeList.insert(parent='', index='end', text="", values=(i['ownerName'],i['vendor'],i['model'],i['type'],i['registrationNumber'],i['engineNumber'],i['mileage']))
+    elif (model.get()!=""):
+        filterKey = model.get()
+        for i in listOfVehicles:
+            if i['model']==filterKey:
+                treeList.insert(parent='', index='end', text="", values=(i['ownerName'],i['vendor'],i['model'],i['type'],i['registrationNumber'],i['engineNumber'],i['mileage']))
+    elif (typeClass.get()!=""):
+        filterKey = typeClass.get()
+        for i in listOfVehicles:
+            if i['type']==filterKey:
+                treeList.insert(parent='', index='end', text="", values=(i['ownerName'],i['vendor'],i['model'],i['type'],i['registrationNumber'],i['engineNumber'],i['mileage']))
+    elif (mileage.get()!=""):
+        filterKey = float(mileage.get())
+        for i in listOfVehicles:
+            if i['mileage']==filterKey:
+                treeList.insert(parent='', index='end', text="", values=(i['ownerName'],i['vendor'],i['model'],i['type'],i['registrationNumber'],i['engineNumber'],i['mileage']))
 def delete():
    # Get selected item to Delete
     selection=treeList.selection()[0] 
@@ -41,6 +73,7 @@ def loadFile():
     showinfo(title="Selected File",message=filename)
     for i in listOfVehicles:
         treeList.insert(parent='', index='end', text="", values=(i['ownerName'],i['vendor'],i['model'],i['type'],i['registrationNumber'],i['engineNumber'],i['mileage']))
+
 
 def sortMileage():
     #Clear the treeview list items
@@ -123,7 +156,7 @@ entry7.grid(row=3,column=1)
 button1=Button(window,width=10,text="Load Pickle",bg='#99CCAA',command=loadFile)
 button1.grid(row=2,column=4)
 
-button8=Button(window,width=10,text="Filter",bg='#99CCAA',)
+button8=Button(window,width=10,text="Filter",bg='#99CCAA',command=filterList)
 button8.grid(row=2,column=5)
 
 #second section 
