@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter.filedialog import askopenfilename
+from tkinter.filedialog import askopenfilename,asksaveasfile
 from tkinter.messagebox import showinfo
 from tkinter.ttk import Style, Treeview
 import pickle
@@ -7,7 +7,6 @@ import pickle
 global listOfVehicles
 global sortedList
 listOfVehicles = list()
-isSorted = False
 vehicle_attributes = ["ownerName","vendor","model","type","registrationNumber","engineNumber","mileage"]
 vehicleDetails = dict.fromkeys(vehicle_attributes, None)
 
@@ -28,12 +27,10 @@ def delete():
     selection=treeList.selection()[0] 
     treeList.delete(selection)
 
-def update():
-   # Get selected item to Edit
-   selected_item = treeList.selection()[0]
-   treeList.item(selected_item, text="blub", values=("foo", "bar"))
-
 def loadFile():
+    #Clear the treeview list items
+    for item in treeList.get_children():
+        treeList.delete(item)
     filetypes = (
         ('Picle files', '*.pkl'),
         ('All files', '*.*')
@@ -49,24 +46,18 @@ def sortMileage():
     #Clear the treeview list items
     for item in treeList.get_children():
         treeList.delete(item)
-    global isSorted
-    isSorted = True
     global listOfVehicles
     global sortedList
     sortedList = sorted(listOfVehicles,key= lambda i:i['mileage'])    
     for i in sortedList:
         treeList.insert(parent='', index='end', text="", values=(i['ownerName'],i['vendor'],i['model'],i['type'],i['registrationNumber'],i['engineNumber'],i['mileage']))
-    showinfo(title="Sorted",message="Sorted Successfully , Create Pickle to Generate Sorted")
-
+    showinfo(title="Sorted",message="Sorted Successfully")
 
 def createPickle():
-    global isSorted
-    if(isSorted):
-        pickle.dump(sortedList,open("sortedData.pkl","wb"))
-        showinfo(title="Created File",message="Sorted Pickle File is Created")
-    else:
-        pickle.dump(listOfVehicles,open("vehicleData.pkl","wb"))
-        showinfo(title="Created File",message="Vehicle Pickle File is Created")
+    fileextensions = [('Pickle File', '*.pkl'),('All Files', '*.*')]
+    file = asksaveasfile(filetypes = fileextensions, defaultextension = fileextensions)
+    pickle.dump(listOfVehicles,open(file,"wb"))
+    showinfo(title="Created File",message="Vehicle Pickle File is Created")
 
 #window configuration.
 window = Tk()
@@ -130,18 +121,15 @@ entry7 = Entry(window,width=25,textvariable=mileage)
 entry7.grid(row=3,column=1)
 
 button1=Button(window,width=10,text="Load Pickle",bg='#99CCAA',command=loadFile)
-button1.grid(row=3,column=4)
+button1.grid(row=2,column=4)
 
-button8=Button(window,width=10,text="Display",bg='#99CCAA',)
-button8.grid(row=3,column=5)
+button8=Button(window,width=10,text="Filter",bg='#99CCAA',)
+button8.grid(row=2,column=5)
 
 #second section 
 #row - 0
 button2=Button(window,width=10,text="Add",bg='#99CCAA',command=addList)
 button2.grid(row=0,column=4)
-
-button3=Button(window,width=10,text="Update",bg='#99CCAA',command=update)
-button3.grid(row=0,column=5)
 
 #row - 1
 button4=Button(window,width=10,text="Delete",bg='#99CCAA',command=delete)
@@ -151,11 +139,11 @@ button5=Button(window,width=10,text="Sort Mileage",bg='#99CCAA',command=sortMile
 button5.grid(row=1,column=5)
 
 #row - 2
-button6=Button(window,width=10,text="Filter",bg='#99CCAA')
-button6.grid(row=2,column=4)
+# button6=Button(window,width=10,text="Filter",bg='#99CCAA')
+# button6.grid(row=2,column=4)
 
 button7=Button(window,width=10,text="Create Pickle",bg='#99CCAA',command=createPickle)
-button7.grid(row=2,column=5)
+button7.grid(row=0,column=5)
 
 
 style = Style()
