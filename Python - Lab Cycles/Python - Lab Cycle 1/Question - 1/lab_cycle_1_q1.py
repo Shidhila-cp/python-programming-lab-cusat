@@ -8,7 +8,7 @@ Original file is located at
 
 #**Python - Lab Cycle - 1**
 
-**1. Develop a program to read a four-digit number and find its**
+**1. Develop a program to read a four-digit number and find the following values**
 \
 a. Sum of digits\
 b. Reverse\
